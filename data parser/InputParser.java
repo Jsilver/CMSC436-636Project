@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class InputParser {
+class InputParser {
     public static void main(String[] args) throws IOException {
 
         // Constants that store the location of your folders
@@ -28,30 +28,30 @@ public class InputParser {
         File [] listOfMathClasses = mathClassesFolder.listFiles();
 
         // Store the order of fields for major data, class data, and degree data
-        ArrayList<String> majorFields = new ArrayList<>();
-        ArrayList<String> classesFields = new ArrayList<>();
-        ArrayList<String> degreeFields = new ArrayList<>();
+        ArrayList<String> majorFields = new ArrayList<String>();
+        ArrayList<String> classesFields = new ArrayList<String>();
+        ArrayList<String> degreeFields = new ArrayList<String>();
 
         /*
            This is the data structure that will differentiate which semester
            a students major data belongs to. The key is the semester number, the value
            is the studentMajorMap for that semester.
          */
-        HashMap<String, HashMap<String, ArrayList>> semesterMajorMap = new HashMap<>();
+        HashMap<String, HashMap<String, ArrayList>> semesterMajorMap = new HashMap<String, HashMap<String, ArrayList>>();
 
         /*
            This is the data structure that will differentiate which semester
            a students CMSC class data belongs to. The key is the semester number, the value
            is the studentCmscClassMap for that semester.
          */
-        HashMap<String, HashMap<String, ArrayList>> semesterCmscClassMap = new HashMap<>();
+        HashMap<String, HashMap<String, ArrayList>> semesterCmscClassMap = new HashMap<String, HashMap<String, ArrayList>>();
 
         /*
            This is the data structure that will differentiate which semester
            a students MATH class data belongs to. The key is the semester number, the value
            is the studentMathClassMap for that semester.
          */
-        HashMap<String, HashMap<String, ArrayList>> semesterMathClassMap = new HashMap<>();
+        HashMap<String, HashMap<String, ArrayList>> semesterMathClassMap = new HashMap<String, HashMap<String, ArrayList>>();
 
         BufferedReader br;
         String line;
@@ -66,7 +66,7 @@ public class InputParser {
                It is a hash map where the key is the students campus ID and the
                value is an array of that students major data.
             */
-            HashMap<String, ArrayList> studentMajorMap = new HashMap<>();
+            HashMap<String, ArrayList> studentMajorMap = new HashMap<String, ArrayList>();
 
             // If it's the fields file, store the order of the text fields
             if (file.getName().equals("00Fields")){
@@ -94,7 +94,7 @@ public class InputParser {
                     }
 
                     // Use the students ID as the "key" and the entire data line as an array as the "value" for the hash map
-                    ArrayList<String> lineArray = new ArrayList<>(Arrays.asList(line.split(",")));
+                    ArrayList<String> lineArray = new ArrayList<String>(Arrays.asList(line.split(",")));
                     studentMajorMap.put(lineArray.get(1), lineArray);
                 }
             }
@@ -139,7 +139,7 @@ public class InputParser {
                It is a hash map where the key is the students campus ID and the
                value is an array of that students CMSC class data.
             */
-            HashMap<String, ArrayList> studentCmscClassMap = new HashMap<>();
+            HashMap<String, ArrayList> studentCmscClassMap = new HashMap<String, ArrayList>();
 
             br = new BufferedReader(new FileReader(file));
 
@@ -152,7 +152,7 @@ public class InputParser {
                 }
 
                 // Use the students ID as the "key" and the entire data line as an array as the "value" for the hash map
-                ArrayList<String> lineArray = new ArrayList<>(Arrays.asList(line.split(",")));
+                ArrayList<String> lineArray = new ArrayList<String>(Arrays.asList(line.split(",")));
                 studentCmscClassMap.put(lineArray.get(1), lineArray);
             }
 
@@ -169,7 +169,7 @@ public class InputParser {
                It is a hash map where the key is the students campus ID and the
                value is an array of that students MATH class data.
             */
-            HashMap<String, ArrayList> studentMathClassMap = new HashMap<>();
+            HashMap<String, ArrayList> studentMathClassMap = new HashMap<String, ArrayList>();
 
             br = new BufferedReader(new FileReader(file));
 
@@ -182,7 +182,7 @@ public class InputParser {
                 }
 
                 // Use the students ID as the "key" and the entire data line as an array as the "value" for the hash map
-                ArrayList<String> lineArray = new ArrayList<>(Arrays.asList(line.split(",")));
+                ArrayList<String> lineArray = new ArrayList<String>(Arrays.asList(line.split(",")));
                 studentMathClassMap.put(lineArray.get(1), lineArray);
             }
 
