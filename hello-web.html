@@ -8,6 +8,13 @@
 		<script type="application/processing">
 			void setup(){
 				size(200, 200);
+				String lines[] = loadStrings("data/hello.txt");
+				//String lines[] = loadStrings("../Release/washed-classes/cmsc-classes-washed/1008.csv");
+				//println("there are " + lines.length + " lines");
+				//for (int i=0; i < lines.length; i++) {
+					//println(lines[i]);
+				//}
+				println(lines);
 			}
 			
 			void draw(){
@@ -15,6 +22,6 @@
 				ellipse(mouseX, mouseY, 20, 20);
 			}
 		</script>
-		<canvas> </canvas>
+		<canvas data-processing-sources="hello-web.pde"></canvas>
 	</body>
 </html>
