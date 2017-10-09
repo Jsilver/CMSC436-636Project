@@ -6,22 +6,67 @@
 	</head>
 	<body>
 		<script type="application/processing">
+			int data[];
+			int semester;
+			int class_id;
+			float numbers[] = {22, 10, 15, 26, 30, 35, 32};
+			
 			void setup(){
-				size(200, 200);
-				String lines[] = loadStrings("data/hello.txt");
-				//String lines[] = loadStrings("../Release/washed-classes/cmsc-classes-washed/1008.csv");
-				//println("there are " + lines.length + " lines");
-				//for (int i=0; i < lines.length; i++) {
+				size(1900, 700);
+				background(100);
+				String lines[] = loadStrings("data/Release/washed-classes/cmsc-classes-washed/1008.csv");
+				int a=0, b=0, c=0, d=0, w=0, f=0, pass=0, I=0, ng=0;
+				String p[];
+				for (int i=0; i < lines.length; i++) {
 					//println(lines[i]);
-				//}
-				println(lines);
+					p = splitTokens(lines[i], ",");
+					semester = p[0];
+					class_id = p[2];
+					//println(p[4]);
+					if(p[4] == "A") a++;
+					if(p[4] == "B") b++;
+					if(p[4] == "C") c++;
+					if(p[4] == "D") d++;
+					if(p[4] == "W") w++;
+					if(p[4] == "F") f++;
+					if(p[4] == "I") I++;
+					if(p[4] == "P") pass++;
+					if(p[4] == "NG") ng++;
+					//for(int j=0; j < p.length; j++){
+						//print(p[j] + " ");
+					//}
+					//println("");
+				}
+				println("As: " + a);
+				println("Bs: " + b);
+				println("Cs: " + c);
+				println("Ds: " + d);
+				println("Fs: " + f);
+				println("Ws: " + w);
+				println("Is: " + I);
+				println("Ps: " + pass);
+				println("NGs: " + ng);
+				int total = a + b + c + d + w + f + I + pass + ng;
+				println("Total: " + total)
+				data = {a, b, c, d, f, w, I, pass, ng};
+				println(data);
 			}
 			
 			void draw(){
-				background(64);
-				ellipse(mouseX, mouseY, 20, 20);
+				drawBarChart(data);
+			}
+			
+			void drawBarChart(float numbers[]){
+				String nums[] = {"A: ", "B: ", "C: ", "D: ", "F: ", "W: ", "Incomplete: ", "Pass: ", "NG: "};
+				for (int i = 0; i < numbers.length; i++) {
+					float w = map(numbers[i], 0, max(numbers), 0, width - 75);
+					rect(10, (i * 25) + 5, w, 20);
+					text(nums[i] + numbers[i], w + 15, (i * 25) + 20 );
+				}
+				text("Semester: " + semester, 10, (i*25)+20);
+				text("Class: " + class_id, 10, (i*25) + 40);
 			}
 		</script>
-		<canvas data-processing-sources="hello-web.pde"></canvas>
+		<canvas></canvas>
 	</body>
 </html>
