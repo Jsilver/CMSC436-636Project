@@ -7,9 +7,9 @@ float numbers[] = {22, 10, 15, 26, 30, 35, 32};
 PFont font;
 
 void setup(){
-  size(1500, 700);
+  size(1000, 600);
   font = createFont("Arial",15,true);
-  String lines[] = loadStrings("/Users/ellio/Documents/School Work/CMSC 436 - Data Visualization/Data/washed-classes/cmsc-classes-washed/1008.csv");
+  String lines[] = loadStrings("/Users/personal/Documents/School Work/CMSC 436/Release/washed-classes/cmsc-classes-washed/1008.csv");
   float a=0, b=0, c=0, d=0, w=0, f=0, pass=0, I=0, ng=0;
   String p[];
   for (int i=0; i < lines.length; i++) {
@@ -58,6 +58,9 @@ void setup(){
 void draw(){
   background(100);
   textFont(font, 15);
+  textAlign(CENTER);
+  text("Grades of CMSC Student's for a Given Semester", width/2, 20);
+  textAlign(LEFT);
   drawBarChart(data);
 }
       
@@ -66,9 +69,9 @@ void drawBarChart(ArrayList<Float> numbers){
   String nums[] = {"A: ", "B: ", "C: ", "D: ", "F: ", "W: ", "Incomplete: ", "Pass: ", "NG: "};
   for (i = 0; i < numbers.size(); i++) {
     float w = map(numbers.get(i), 0, Collections.max(numbers), 0, width - 75);
-    rect(10, (i * 25) + 5, w, 20);
-    text(nums[i] + numbers.get(i), w + 15, (i * 25) + 20 );
+    rect(10, ((i + 1) * 25) + 5, w, 20);
+    text(nums[i] + numbers.get(i), w + 15, ((i + 1) * 25) + 20 );
   }
-  text("Semester: " + semester, 10, (i*25)+20);
-  text("Class: " + class_id, 10, (i*25) + 40);
+  text("Semester: " + semester, 10, ((i+1)*25)+20);
+  text("Class: " + class_id, 10, ((i+1)*25) + 40);
 }
