@@ -9,7 +9,7 @@ PFont font;
 void setup(){
   size(1000, 600);
   font = createFont("Arial",15,true);
-  String lines[] = loadStrings("/Users/personal/Documents/School Work/CMSC 436/Release/washed-classes/cmsc-classes-washed/1008.csv");
+  String lines[] = loadStrings("/Users/ellio/Documents/School Work/CMSC 436 - Data Visualization/Data/washed-classes/cmsc-classes-washed/1008.csv");
   float a=0, b=0, c=0, d=0, w=0, f=0, pass=0, I=0, ng=0;
   String p[];
   for (int i=0; i < lines.length; i++) {
@@ -59,7 +59,7 @@ void draw(){
   background(100);
   textFont(font, 15);
   textAlign(CENTER);
-  text("Grades of CMSC Student's for a Given Semester", width/2, 20);
+  text("Grades of All Students Taking CMSC Courses for a Given Semester", width/2, 20);
   textAlign(LEFT);
   drawBarChart(data);
 }
