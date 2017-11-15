@@ -10,10 +10,18 @@
 			int number_of_years = 7;
 			var Semester = "Fall";
 			int Semester_id = 8;
+			
+			int text_x = 1790;
 			int bar_chart = 0;
 			int line_graph = 1;
+			
+			var class_setting = "All";
+			int all_classes = 1;
+			int math_class = 0;
+			int cmsc_class = 0;
 		
 			var classes = "data/Release/washed-classes/cmsc-classes-washed/10";
+			var math_classes = "data/Release/washed-classes/math-classes-washed/10";
 			int As = [], Bs = [],Cs = [], Ds = [];
 			int Ws = [], Fs = [], Is = [], Ps = [], NGs = [];
 			
@@ -29,21 +37,40 @@
 				As = []; Bs = []; Cs = []; Ds = [];
 				Ws = []; Fs = []; Is = []; Ps = []; NGs = [];
 				for(int j = 1; j <= number_of_years; j++){
-					var file = classes + j + Semester_id + ".csv";
-					String lines[] = loadStrings(file);
 					int a=0, b=0, c=0, d=0, w=0, f=0, pass=0, I=0, ng=0;
-					String p[];
-					for (int i=0; i < lines.length; i++) {
-						p = splitTokens(lines[i], ",");
-						if(p[4] == "A") a++;
-						if(p[4] == "B") b++;
-						if(p[4] == "C") c++;
-						if(p[4] == "D") d++;
-						if(p[4] == "W") w++;
-						if(p[4] == "F") f++;
-						if(p[4] == "I") I++;
-						if(p[4] == "P") pass++;
-						if(p[4] == "NG") ng++;
+					if(all_classes == 1 || cmsc_class == 1){
+						var file = classes + j + Semester_id + ".csv";
+						String lines[] = loadStrings(file);
+						String p[];
+						for (int i=0; i < lines.length; i++) {
+							p = splitTokens(lines[i], ",");
+							if(p[4] == "A") a++;
+							if(p[4] == "B") b++;
+							if(p[4] == "C") c++;
+							if(p[4] == "D") d++;
+							if(p[4] == "W") w++;
+							if(p[4] == "F") f++;
+							if(p[4] == "I") I++;
+							if(p[4] == "P") pass++;
+							if(p[4] == "NG") ng++;
+						}
+					}
+					if(all_classes == 1 || math_class == 1){
+						var file = math_classes + j + Semester_id + ".csv";
+						String lines[] = loadStrings(file);
+						String p[];
+						for (int i=0; i < lines.length; i++) {
+							p = splitTokens(lines[i], ",");
+							if(p[4] == "A") a++;
+							if(p[4] == "B") b++;
+							if(p[4] == "C") c++;
+							if(p[4] == "D") d++;
+							if(p[4] == "W") w++;
+							if(p[4] == "F") f++;
+							if(p[4] == "I") I++;
+							if(p[4] == "P") pass++;
+							if(p[4] == "NG") ng++;
+						}
 					}
 					As.push(a);
 					Bs.push(b);
@@ -60,38 +87,59 @@
 			
 			void draw(){
 				background(200);
+				int text_x = 1790;
+				text ("Filters:", text_x, 125);
+				text ("Classes: " + class_setting, text_x, 140);
+				text ("All | CMSC | MATH", text_x, 154);
 				if(line_graph == 1){
-					text ("Years: " + number_of_years, 1800, 10);
-					text ("add 1 | remove 1", 1800, 24);
-					text ("Semester: " + Semester, 1800, 40);
-					text ("previous | next", 1800, 54);
-					text ("Switch to bar chart", 1800, 70);
+					line(30, 40, 30, height - 30);
+					line(30, height - 30, width*.9, height - 30)
+					text("0", 0, height - 50);
+					text("100", 0, height - 100);
+					text("200", 0, height - 150);
+					text("300", 0, height - 200);
+					text("400", 0, height - 250);
+					text("500", 0, height - 300);
+					text("600", 0, height - 350);
+					text("700", 0, height - 400);
+					text("800", 0, height - 450);
+					text("900", 0, height - 500);
+					text("1000", 0, height - 550);
+					text("1100", 0, height - 600);
+					text("1200", 0, height - 650);
+					text ("# of Grades per Year", 900, 10);
+					text ("Years: " + number_of_years, text_x, 10);
+					text ("add 1 | remove 1", text_x, 24);
+					text ("Semester: " + Semester, text_x, 40);
+					text ("previous | next", text_x, 54);
+					text ("Switch to bar chart", text_x, 70);
 					drawLineGraph();
 				}
 				if(bar_chart == 1){
-					text ("Year: " + number_of_years, 1800, 10);
-					text ("add 1 | remove 1", 1800, 24);
-					text ("Semester: " + Semester, 1800, 40);
-					text ("previous | next", 1800, 54);
-					text ("Switch to line graph", 1800, 70);
+					text ("# of Grades this Semester", 900, 10);
+					text ("Year: " + number_of_years, text_x, 10);
+					text ("add 1 | remove 1", text_x, 24);
+					text ("Semester: " + Semester, text_x, 40);
+					text ("previous | next", text_x, 54);
+					text ("Switch to line graph", text_x, 70);
 					drawBarChart();
 				}
 			}
 			
 			void mousePressed(){
-				if(mouseX > 1800 && mouseX < 1850 && mouseY > 15 && mouseY < 35){
+				if(mouseX > text_x && mouseX < (text_x+50) && mouseY > 15 && mouseY < 35){
 					if(number_of_years < 7){
 						number_of_years += 1;
 					}
 					setData();
 				}
-				else if(mouseX > 1850 && mouseY > 15 && mouseY < 35){
+				else if(mouseX > (text_x+50) && mouseY > 15 && mouseY < 35){
 					if(number_of_years > 1){
 						number_of_years -= 1;
 					}
 					setData();
 				}
-				else if(mouseX > 1800 && mouseX < 1855 && mouseY > 40 && mouseY < 60){
+				else if(mouseX > text_x && mouseX < (text_x+55) && mouseY > 40 && mouseY < 60){
 					if(Semester_id == 8){
 						Semester = "Summer";
 						Semester_id = 6;
@@ -110,7 +158,7 @@
 					}
 					setData();
 				}
-				else if(mouseX > 1855 && mouseY > 40 && mouseY < 60){
+				else if(mouseX > (text_x+55) && mouseY > 40 && mouseY < 60){
 					if(Semester_id == 2){
 						Semester = "Summer";
 						Semester_id = 6;
@@ -129,7 +177,7 @@
 					}
 					setData();
 				}
-				else if(mouseX > 1800 && mouseY > 60 && mouseY < 70){
+				else if(mouseX > text_x && mouseY > 60 && mouseY < 70){
 					if(line_graph == 1){
 						line_graph = 0;
 						bar_chart = 1;
@@ -138,7 +186,27 @@
 						line_graph = 1;
 						bar_chart = 0;
 					}
-					println(bar_chart);
+				}
+				else if(mouseX > text_x && mouseX < (text_x+20) && mouseY > 145 && mouseY < 163){
+					class_setting = "All";
+					all_classes = 1;
+					math_class = 0;
+					cmsc_class = 0;
+					setData();
+				}
+				else if(mouseX > (text_x+25) && mouseX < (text_x+40) && mouseY > 145 && mouseY < 163){
+					class_setting = "CMSC";
+					all_classes = 0;
+					math_class = 0;
+					cmsc_class = 1;
+					setData();
+				}
+				else if(mouseX > (text_x+45) && mouseY > 145 && mouseY < 163){
+					class_setting = "MATH";
+					all_classes = 0;
+					math_class = 1;
+					cmsc_class = 0;
+					setData();
 				}
 			}
 			
@@ -149,42 +217,44 @@
 								Is[number_of_years-1], Ps[number_of_years-1], NGs[number_of_years-1]};
 				for (int i = 0; i < numbers.length; i++) {
 					float w = map(numbers[i], 0, max(numbers), 0, width - 200);
-					rect(10, (i * 25) + 5, w, 20);
-					text(nums[i] + numbers[i], w + 15, (i * 25) + 20 );
+					rect(10, (i * 25) + 20, w, 20);
+					text(nums[i] + numbers[i], w + 15, (i * 25) + 35);
 				}
 			}
 			
 			void drawLineGraph(){
 				float lineWidth = (float)width/(As.length);
 				fill(0, 0, 255);
-				text("As", (As.length-1)*lineWidth + 30, As[As.length-1]/2 + 50);
-				text("Bs", (As.length-1)*lineWidth + 40, Bs[Bs.length-1]/2 + 50);
-				text("Cs", (As.length-1)*lineWidth + 50, Cs[Cs.length-1]/2 + 50);
-				text("Ds", (As.length-1)*lineWidth + 60, Ds[Ds.length-1]/2 + 50);
-				text("Ws", (As.length-1)*lineWidth + 70, Ws[Ws.length-1]/2 + 50);
-				text("Fs", (As.length-1)*lineWidth + 60, Fs[Fs.length-1]/2 + 50);
-				text("Is", (As.length-1)*lineWidth + 50, Is[Is.length-1]/2 + 50);
-				text("Ps", (As.length-1)*lineWidth + 40, Ps[Ps.length-1]/2 + 50);
-				text("NGs", (As.length-1)*lineWidth + 10, NGs[NGs.length-1]/2 + 50);
+				text("As", (As.length-1)*lineWidth + 70, height - (As[As.length-1]/2 + 50));
+				text("Bs", (As.length-1)*lineWidth + 80, height - (Bs[Bs.length-1]/2 + 50));
+				text("Cs", (As.length-1)*lineWidth + 90, height - (Cs[Cs.length-1]/2 + 50));
+				text("Ds", (As.length-1)*lineWidth + 100, height - (Ds[Ds.length-1]/2 + 50));
+				text("Ws", (As.length-1)*lineWidth + 110, height - (Ws[Ws.length-1]/2 + 50));
+				text("Fs", (As.length-1)*lineWidth + 100, height - (Fs[Fs.length-1]/2 + 50));
+				text("Is", (As.length-1)*lineWidth + 90, height - (Is[Is.length-1]/2 + 50));
+				text("Ps", (As.length-1)*lineWidth + 80, height - (Ps[Ps.length-1]/2 + 50));
+				text("NGs", (As.length-1)*lineWidth + 60, height - (NGs[NGs.length-1]/2 + 50));
 				for(int i = 0; i < As.length-1; i++){
-					text(As[i], i*lineWidth, As[i]/2 + 50); text(As[i+1], (i+1)*lineWidth, As[i+1]/2 + 50);
-					text(Bs[i], i*lineWidth, Bs[i]/2 + 50); text(Bs[i+1], (i+1)*lineWidth, Bs[i+1]/2 + 50);
-					text(Cs[i], i*lineWidth, Cs[i]/2 + 50); text(Cs[i+1], (i+1)*lineWidth, Cs[i+1]/2 + 50);
-					text(Ds[i], i*lineWidth, Ds[i]/2 + 50); text(Ds[i+1], (i+1)*lineWidth, Ds[i+1]/2 + 50);
-					text(Ws[i], i*lineWidth, Ws[i]/2 + 50); text(Ws[i+1], (i+1)*lineWidth, Ws[i+1]/2 + 50);
-					text(Fs[i], i*lineWidth, Fs[i]/2 + 50); text(Fs[i+1], (i+1)*lineWidth, Fs[i+1]/2 + 50);
-					text(Is[i], i*lineWidth, Is[i]/2 + 50); text(Is[i+1], (i+1)*lineWidth, Is[i+1]/2 + 50);
-					text(Ps[i], i*lineWidth, Ps[i]/2 + 50); text(Ps[i+1], (i+1)*lineWidth, Ps[i+1]/2 + 50);
-					text(NGs[i], i*lineWidth, NGs[i]/2 + 50); text(NGs[i+1], (i+1)*lineWidth, NGs[i+1]/2 + 50);
-					line(i*lineWidth, As[i]/2 + 50, (i+1)*lineWidth, As[i+1]/2 + 50);
-					line(i*lineWidth, Bs[i]/2 + 50, (i+1)*lineWidth, Bs[i+1]/2 + 50);
-					line(i*lineWidth, Cs[i]/2 + 50, (i+1)*lineWidth, Cs[i+1]/2 + 50);
-					line(i*lineWidth, Ds[i]/2 + 50, (i+1)*lineWidth, Ds[i+1]/2 + 50);
-					line(i*lineWidth, Ws[i]/2 + 50, (i+1)*lineWidth, Ws[i+1]/2 + 50);
-					line(i*lineWidth, Fs[i]/2 + 50, (i+1)*lineWidth, Fs[i+1]/2 + 50);
-					line(i*lineWidth, Is[i]/2 + 50, (i+1)*lineWidth, Is[i+1]/2 + 50);
-					line(i*lineWidth, Ps[i]/2 + 50, (i+1)*lineWidth, Ps[i+1]/2 + 50);
-					line(i*lineWidth, NGs[i]/2 + 50, (i+1)*lineWidth, NGs[i+1]/2 + 50);
+					text (Semester + " " + (i+1), i*lineWidth + 40, height - 10);
+					text (Semester + " " + (i+2), (i+1)*lineWidth + 40, height - 10);
+					text(As[i], i*lineWidth + 40, height - (As[i]/2 + 50)); text(As[i+1], (i+1)*lineWidth + 40, height - (As[i+1]/2 + 50));
+					text(Bs[i], i*lineWidth + 40, height - (Bs[i]/2 + 50)); text(Bs[i+1], (i+1)*lineWidth + 40, height - (Bs[i+1]/2 + 50));
+					text(Cs[i], i*lineWidth + 40, height - (Cs[i]/2 + 50)); text(Cs[i+1], (i+1)*lineWidth + 40, height - (Cs[i+1]/2 + 50));
+					text(Ds[i], i*lineWidth + 40, height - (Ds[i]/2 + 50)); text(Ds[i+1], (i+1)*lineWidth + 40, height - (Ds[i+1]/2 + 50));
+					text(Ws[i], i*lineWidth + 40, height - (Ws[i]/2 + 50)); text(Ws[i+1], (i+1)*lineWidth + 40, height - (Ws[i+1]/2 + 50));
+					text(Fs[i], i*lineWidth + 40, height - (Fs[i]/2 + 50)); text(Fs[i+1], (i+1)*lineWidth + 40, height - (Fs[i+1]/2 + 50));
+					text(Is[i], i*lineWidth + 40, height - (Is[i]/2 + 50)); text(Is[i+1], (i+1)*lineWidth + 40, height - (Is[i+1]/2 + 50));
+					text(Ps[i], i*lineWidth + 40, height - (Ps[i]/2 + 50)); text(Ps[i+1], (i+1)*lineWidth + 40, height - (Ps[i+1]/2 + 50));
+					text(NGs[i], i*lineWidth + 40, height - (NGs[i]/2 + 50)); text(NGs[i+1], (i+1)*lineWidth + 40, height - (NGs[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (As[i]/2 + 50), (i+1)*lineWidth + 40, height - (As[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Bs[i]/2 + 50), (i+1)*lineWidth + 40, height - (Bs[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Cs[i]/2 + 50), (i+1)*lineWidth + 40, height - (Cs[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Ds[i]/2 + 50), (i+1)*lineWidth + 40, height - (Ds[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Ws[i]/2 + 50), (i+1)*lineWidth + 40, height - (Ws[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Fs[i]/2 + 50), (i+1)*lineWidth + 40, height - (Fs[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Is[i]/2 + 50), (i+1)*lineWidth + 40, height - (Is[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (Ps[i]/2 + 50), (i+1)*lineWidth + 40, height - (Ps[i+1]/2 + 50));
+					line(i*lineWidth + 40, height - (NGs[i]/2 + 50), (i+1)*lineWidth + 40, height - (NGs[i+1]/2 + 50));
 				}
 			}
 		</script>
