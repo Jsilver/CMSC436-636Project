@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My Sketch</title>
+		<script src="processing.min.js"></script>
+	</head>
+	<body>
+		<script type="application/processing">
+			//Declare time scope
+			int number_of_years = 6;
+			var Semester = "Fall";
+			int Semester_id = 2;			
+			int text_x = 1790;
+
+			var classes = "data/Release/washed-classes/cmsc-classes-washed/10";
+			var math_classes = "data/Release/washed-classes/math-classes-washed/10";
+			var washed_majors = "data/Release/washed-majors/10";
+			
+			var class_to_look_for = "301480";
+			
+			int student_lock = 0;
+			int semester_lock = 0;
+			int displayed_students = [];
+			int received_students = [];
+			var all_gpa_history = [];
+			var all_major_history = [];
+			var all_class_history = [];
+			var all_status_history = [];
+			var all_semester_history = [];
+			var all_num_class_history = [];
+			var mouse_o= [];
+			
+			int current_student;
+			var student_gpa = "";
+			var gpa_history = [];
+			var major_history = [];
+			var class_history = [];
+			var status_history = [];
+			var current_classes;
+			var semester_history = [];
+			var num_class_history = [];
+			int num_classes;
+			int current_gpa = 0;
+
+			var dis_student = "";
+			var dis_semester = "";
+			var dis_classes = "";
+			var dis_major = "";
+			var dis_gpa = "";
+			var dis_status = "";
+			int print_once = 0;
+			int collect_data = 0;
+			int filter = 0;
+			
+			void setup(){
+				size(1900, 925);
+				strokeWeight(4);
+				smooth();
+				frameRate(0.5);
+				
+				while(displayed_students.length < 15){
+					setData();
+					major_history = [];
+					class_history = [];
+					semester_history = [];
+					gpa_history = [];
+					status_history = [];
+					num_class_history = [];
+				}
+			}
+				
+			void setData(){
+				for(int j = 1; j <= number_of_years; j++){
+					for(int k = 0; k < 2; k++){
+						if(k == 0){
+							Semester_id = 2;
+						}
+						else{
+							Semester_id = 8;
+						}
+						var file = classes + j + Semester_id + ".csv";
+						String lines[] = loadStrings(file);
+						String p[];
+						
+						semester_lock = 0;
+						current_classes = "";
+						student_gpa = "";
+						current_gpa = 0;
+						num_classes = 0;
+						for (int i=0; i < lines.length; i++) {
+							p = splitTokens(lines[i], ",");
+							if(student_lock == 1 && p[1] == current_student){
+								num_classes++;
+								if(semester_lock == 0){
+									semester_history.push("10" + j + Semester_id);
+									major_history.push(p[5]);
+									status_history.push(p[11]);
+									semester_lock = 1;
+								}
+								if(current_classes == "")
+									current_classes = p[2] + " " + p[4];
+								else
+									current_classes = current_classes + ", " + p[2] + " " + p[4];
+								
+								if(p[4].includes("A") || p[4] == "P") current_gpa += 4.0;
+								else if(p[4].includes("B")) current_gpa += 3.0;
+								else if(p[4].includes("C")) current_gpa += 2.0;
+								else if(p[4].includes("D")) current_gpa += 1.0;
+								else if(p[4].includes("F")) current_gpa += 0.0;
+								else num_classes--;
+								
+								if(p[2] == class_to_look_for && current_gpa < 3 && (displayed_students.lastIndexOf(p[1]) == -1)){
+									displayed_students.push(p[1]);
+									collect_data = 1;
+								}
+							}
+							if(student_lock == 0 && (received_students.lastIndexOf(p[1]) == -1) && p[5].includes("CMSC")){
+								num_classes++;
+								if(filter == 0){
+									displayed_students.push(p[1]);
+									collect_data = 1;
+								}
+								student_lock = 1;
+								semester_lock = 1;
+								current_student = p[1];
+								received_students.push(p[1]);
+								major_history.push(p[5]);
+								current_classes = p[2] + " " + p[4];
+								semester_history.push("10" + j + Semester_id);
+								status_history.push(p[11]);
+								if(p[4].includes("A") || p[4] == "P") current_gpa += 4.0;
+								else if(p[4].includes("B")) current_gpa += 3.0;
+								else if(p[4].includes("C")) current_gpa += 2.0;
+								else if(p[4].includes("D")) current_gpa += 1.0;
+								else if(p[4].includes("F")) current_gpa += 0.0;
+								else num_classes--;
+								
+								if(p[2] == class_to_look_for && current_gpa < 3){
+									displayed_students.push(p[1]);
+									collect_data = 1;
+								}
+							}
+						}
+						
+						var file = math_classes + j + Semester_id + ".csv";
+						String lines[] = loadStrings(file);
+						String p[];
+						for (int i=0; i < lines.length; i++) {
+							p = splitTokens(lines[i], ",");
+							
+							if(student_lock == 1 && p[1] == current_student){
+								num_classes++;
+								if(semester_lock == 0){
+									semester_history.push("10" + j + Semester_id);
+									major_history.push(p[5]);
+									status_history.push(p[11]);
+									semester_lock = 1;
+								}
+								
+								if(current_classes == "")
+									current_classes = p[2] + " " + p[4];
+								else
+									current_classes = current_classes + ", " + p[2] + " " + p[4];
+								
+								if(p[4].includes("A") || p[4] == "P") current_gpa += 4.0;
+								else if(p[4].includes("B")) current_gpa += 3.0;
+								else if(p[4].includes("C")) current_gpa += 2.0;
+								else if(p[4].includes("D")) current_gpa += 1.0;
+								else if(p[4].includes("F")) current_gpa += 0.0;
+								else num_classes--;
+							}
+						}
+
+						var file = washed_majors + j + Semester_id + ".csv";
+						String lines[] = loadStrings(file);
+						String p[];
+						for(int i=0; i < lines.length; i++){
+							p = splitTokens(lines[i], ",");
+							if(student_lock == 1 && p[1] == current_student){
+								student_gpa = p[8];
+							}
+						}
+						
+						if(current_classes.length != 0){
+							class_history.push(current_classes);
+							if(num_classes == 0)
+								current_gpa = 0;
+							else
+								current_gpa = current_gpa / num_classes;
+							if(student_gpa == "")
+								gpa_history.push(current_gpa);
+							else
+								gpa_history.push(student_gpa);
+							num_class_history.push(num_classes);
+						}
+					}
+				}
+				
+				student_lock = 0;
+				if(collect_data == 1){
+					all_gpa_history.push(gpa_history);
+					all_major_history.push(major_history);
+					all_class_history.push(class_history);
+					all_status_history.push(status_history);
+					all_semester_history.push(semester_history);
+					all_num_class_history.push(num_class_history);
+					collect_data = 0;
+				}
+			}
+			
+			void draw(){
+				background(225, 240, 225);
+				int text_x = 1790;
+				fill(0, 0, 255);
+				line(30, 40, 30, height * .93);
+				line(30, height * .93, width*.9, height * .93)
+				text("1", 10, height * .9);
+				text("2", 10, height * .77);
+				text("3", 10, height * .64);
+				text("4", 10, height * .51);
+				text("5", 10, height * .38);
+				text("6", 10, height * .25);
+				text("7", 10, height * .12);
+				textSize(20);
+				text ("Students Over Semesters", text_x * .45, 20);
+				textSize(15);
+				
+				for(int i = 0; i < mouse_o.length; i+=10){
+					if(mouseX > mouse_o[i] && mouseX < mouse_o[i+1] && mouseY > mouse_o[i+2] && mouseY < mouse_o[i+3]){
+						dis_student = "Student Info: " + mouse_o[i+4];
+						dis_semester = "Semester: " + mouse_o[i+5];
+						dis_classes = "Classes: " + mouse_o[i+6];
+						dis_major = "Current Major: " + mouse_o[i+7];
+						dis_gpa = "GPA: " + mouse_o[i+8];
+						dis_status = "Status: " + mouse_o[i+9];
+					}
+				}
+				text(dis_student, 50, height*.05);
+				text(dis_semester, 70, height*.07);
+				text(dis_classes, 70, height*.09);
+				text(dis_major, 70, height*.11);
+				text(dis_gpa, 70, height*.13);
+				text(dis_status, 70, height*.15);
+				dis_student = "";
+				dis_semester = "";
+				dis_classes = "";
+				dis_major = "";
+				dis_gpa = "";
+				dis_status = "";
+				textSize(14);
+				text ("Filter", text_x * .97, height * .85);
+				text ("Reset | 301480", text_x * .97, height * .87);
+				text ("Sample Students", text_x * .97, height * .9);
+				text ("Reset | Next 15", text_x * .97, height * .92);
+				textSize(12);
+				drawLineGraph();
+			}
+			
+			void mousePressed(){
+				if(mouseX >= (text_x) && mouseY > (height*.85) && mouseY < (height * .89)){
+					filter = 1;
+					received_students = [];
+					student_lock = 0;
+					semester_lock = 0;
+					displayed_students = [];
+					all_gpa_history = [];
+					all_major_history = [];
+					all_class_history = [];
+					all_status_history = [];
+					all_semester_history = [];
+					all_num_class_history = [];
+					mouse_o = [];
+					print_once = 0;
+					while(displayed_students.length < 15){
+						setData();
+						major_history = [];
+						class_history = [];
+						semester_history = [];
+						gpa_history = [];
+						status_history = [];
+						num_class_history = [];
+					}
+				}
+				if(mouseX >= (text_x) && mouseY > (height * .90) && mouseY < (height * .95)){
+					student_lock = 0;
+					semester_lock = 0;
+					displayed_students = [];
+					all_gpa_history = [];
+					all_major_history = [];
+					all_class_history = [];
+					all_status_history = [];
+					all_semester_history = [];
+					all_num_class_history = [];
+					mouse_o = [];
+					print_once = 0;
+					while(displayed_students.length < 15){
+						setData();
+						major_history = [];
+						class_history = [];
+						semester_history = [];
+						gpa_history = [];
+						status_history = [];
+						num_class_history = [];
+					}
+				}
+				else if(mouseX > (text_x*.97) && mouseX < (text_x) && 
+				((mouseY > (height * .90) && mouseY < (height * .95)) || (mouseY > (height*.85) && mouseY < (height * .89)))){
+					filter = 0;
+					received_students = [];
+					student_lock = 0;
+					semester_lock = 0;
+					displayed_students = [];
+					all_gpa_history = [];
+					all_major_history = [];
+					all_class_history = [];
+					all_status_history = [];
+					all_semester_history = [];
+					all_num_class_history = [];
+					mouse_o = [];
+					print_once = 0;
+					while(displayed_students.length < 15){
+						setData();
+						major_history = [];
+						class_history = [];
+						semester_history = [];
+						gpa_history = [];
+						status_history = [];
+						num_class_history = [];
+					}
+				}
+			}
+			
+			void drawLineGraph(){
+				float lineWidth = ((float)width * .9)/(15);
+				textSize(17);
+				text("Student", text_x * .475, height * .98);
+				text("Color: ", text_x * .97, height * .1);
+				text("Opacity: ", text_x * .97, height * .4);
+				fill(0, 255, 0);
+				rect(text_x * .97, height * .12, lineWidth / 2, lineWidth / 2);
+				fill(255, 255, 0);
+				rect(text_x * .97, height * .19, lineWidth / 2, lineWidth / 2);
+				fill(255, 0, 0);
+				rect(text_x * .97, height * .26, lineWidth / 2, lineWidth / 2);
+				fill(200, 0, 200);
+				rect(text_x * .97, height * .33, lineWidth / 2, lineWidth / 6);
+				fill(0, 255, 0);
+				rect(text_x * .97, height * .42, lineWidth / 2, lineWidth / 2);
+				fill(75, 255, 75);
+				rect(text_x * .97, height * .49, lineWidth / 2, lineWidth / 2);
+				fill(150, 255, 150);
+				rect(text_x * .97, height * .56, lineWidth / 2, lineWidth / 2);
+				textSize(12);
+				fill(0, 0, 255);
+				text("= A-B Average", text_x*1.005, height * .15);
+				text("= C Average", text_x*1.005, height * .22);
+				text("= D Average", text_x*1.005, height * .29);
+				text("= Changed Major", text_x*1.005, height * .345);
+				text("= 3+ Classes", text_x*1.005, height * .45);
+				text("= 2 Classes", text_x*1.005, height * .52);
+				text("= 1 Class", text_x*1.005, height * .59);
+				
+				if(print_once == 0){
+					print_once = 1;
+				}
+				
+				for(int i = 0; i < displayed_students.length; i++){
+					for(int j = 0; j < all_semester_history[i].length; j++){
+						if(all_gpa_history[i][j] >= 3){
+							if(all_num_class_history[i][j] > 2) fill(0, 255, 0);
+							else if(all_num_class_history[i][j] == 2) fill(75, 255, 75);
+							else if(all_num_class_history[i][j] <= 1) fill(150, 255, 150);
+						}
+						else if(all_gpa_history[i][j] > 2){
+							if(all_num_class_history[i][j] > 2) fill(255, 255, 0);
+							else if(all_num_class_history[i][j] == 2) fill(255, 255, 75);
+							else if(all_num_class_history[i][j] <= 1) fill(255, 255, 150);
+						}
+						else if(all_gpa_history[i][j] <= 2){
+							if(all_num_class_history[i][j] > 2) fill(255, 0, 0);
+							else if(all_num_class_history[i][j] == 2) fill(255, 75, 75);
+							else if(all_num_class_history[i][j] <= 1) fill(255, 150, 150);
+						}
+						rect((i*lineWidth) + 50, height * (.86-(.07*(j))), lineWidth / 2, lineWidth / 2);
+						
+						if(j != 0 && all_major_history[i][j] != all_major_history[i][j-1]){
+							fill(200, 0, 200);
+							rect((i*lineWidth) + 50, height * (.86-(.07*(j))), lineWidth / 2, lineWidth / 6);
+						}
+						
+						mouse_o.push((i*lineWidth) + 50);
+						mouse_o.push(((i*lineWidth) + 50) + (lineWidth/2));
+						mouse_o.push(height * (.86-(.07*j)));
+						mouse_o.push((height * (.86-(.07*j))) + (lineWidth/2));
+						mouse_o.push(displayed_students[i]);
+						mouse_o.push(all_semester_history[i][j]);
+						mouse_o.push(all_class_history[i][j]);
+						mouse_o.push(all_major_history[i][j]);
+						mouse_o.push(all_gpa_history[i][j]);
+						mouse_o.push(all_status_history[i][j]);
+					}
+					fill(0, 0, 255);
+					text(displayed_students[i], (i*lineWidth) + 50, height * .95);
+				}
+			}
+		</script>
+		<canvas></canvas>
+	</body>
+</html>
