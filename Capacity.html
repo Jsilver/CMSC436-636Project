@@ -17,6 +17,8 @@
 			var washed_majors = "data/Release/washed-majors/10";
 			
 			var class_to_look_for = "301480";
+			var class_search = "";
+			float gpa_index = 3.0;
 			
 			int student_lock = 0;
 			int semester_lock = 0;
@@ -109,7 +111,7 @@
 								else if(p[4].includes("F")) current_gpa += 0.0;
 								else num_classes--;
 								
-								if(p[2] == class_to_look_for && current_gpa < 3 && (displayed_students.lastIndexOf(p[1]) == -1)){
+								if(p[2] == class_to_look_for && current_gpa < gpa_index && (displayed_students.lastIndexOf(p[1]) == -1)){
 									displayed_students.push(p[1]);
 									collect_data = 1;
 								}
@@ -135,7 +137,7 @@
 								else if(p[4].includes("F")) current_gpa += 0.0;
 								else num_classes--;
 								
-								if(p[2] == class_to_look_for && current_gpa < 3){
+								if(p[2] == class_to_look_for && current_gpa < gpa_index){
 									displayed_students.push(p[1]);
 									collect_data = 1;
 								}
@@ -210,10 +212,28 @@
 			
 			void draw(){
 				background(225, 240, 225);
+				if(keyPressed){
+					if(key >= 48 && key <= 57){
+						class_search = class_search + String.fromCharCode(key);
+					}
+					if(key == 10){
+						if(class_search.length < 6 || class_search.length > 6){
+							class_search = "";
+						}
+						else {
+							class_to_look_for = class_search;
+							class_search = "";
+							filter = 1;
+							received_students = [];
+							data_refresh();
+						}
+					}
+				}
+				
 				int text_x = 1790;
 				fill(0, 0, 255);
 				line(30, 40, 30, height * .93);
-				line(30, height * .93, width*.9, height * .93)
+				line(30, height * .93, width*.9, height * .93);
 				text("1", 10, height * .9);
 				text("2", 10, height * .77);
 				text("3", 10, height * .64);
@@ -248,85 +268,59 @@
 				dis_gpa = "";
 				dis_status = "";
 				textSize(14);
-				text ("Filter", text_x * .97, height * .85);
-				text ("Reset | 301480", text_x * .97, height * .87);
+				fill(0, 0, 0);
+				text ("Search", text_x * .97, height * .80);
+				fill(0, 0, 255);
+				text (class_search, text_x * .97, height * .82);
+				fill(0, 0, 0);
+				text ("GPA Query", text_x * .97, height * .85);
+				fill(0, 0, 255);
+				text (gpa_index.toFixed(1) + " < | >", text_x * .97, height * .87);
+				fill(0, 0, 0);
 				text ("Sample Students", text_x * .97, height * .9);
+				fill(0, 0, 255);
 				text ("Reset | Next 15", text_x * .97, height * .92);
 				textSize(12);
 				drawLineGraph();
 			}
 			
+			void data_refresh(){
+				student_lock = 0;
+				semester_lock = 0;
+				displayed_students = [];
+				all_gpa_history = [];
+				all_major_history = [];
+				all_class_history = [];
+				all_status_history = [];
+				all_semester_history = [];
+				all_num_class_history = [];
+				mouse_o = [];
+				print_once = 0;
+				while(displayed_students.length < 15){
+					setData();
+					major_history = [];
+					class_history = [];
+					semester_history = [];
+					gpa_history = [];
+					status_history = [];
+					num_class_history = [];
+				}
+			}
+			
 			void mousePressed(){
-				if(mouseX >= (text_x) && mouseY > (height*.85) && mouseY < (height * .89)){
-					filter = 1;
-					received_students = [];
-					student_lock = 0;
-					semester_lock = 0;
-					displayed_students = [];
-					all_gpa_history = [];
-					all_major_history = [];
-					all_class_history = [];
-					all_status_history = [];
-					all_semester_history = [];
-					all_num_class_history = [];
-					mouse_o = [];
-					print_once = 0;
-					while(displayed_students.length < 15){
-						setData();
-						major_history = [];
-						class_history = [];
-						semester_history = [];
-						gpa_history = [];
-						status_history = [];
-						num_class_history = [];
-					}
+				if(mouseX >= (text_x*.97) && mouseX < (text_x*.99) && mouseY > (height*.85) && mouseY < (height * .89)){
+					gpa_index -= 0.1;
+				}
+				if(mouseX > (text_x * .99) && mouseY > (height*.85) && mouseY < (height * .89)){
+					gpa_index += 0.1;
 				}
 				if(mouseX >= (text_x) && mouseY > (height * .90) && mouseY < (height * .95)){
-					student_lock = 0;
-					semester_lock = 0;
-					displayed_students = [];
-					all_gpa_history = [];
-					all_major_history = [];
-					all_class_history = [];
-					all_status_history = [];
-					all_semester_history = [];
-					all_num_class_history = [];
-					mouse_o = [];
-					print_once = 0;
-					while(displayed_students.length < 15){
-						setData();
-						major_history = [];
-						class_history = [];
-						semester_history = [];
-						gpa_history = [];
-						status_history = [];
-						num_class_history = [];
-					}
+					data_refresh();
 				}
-				else if(mouseX > (text_x*.97) && mouseX < (text_x) && 
-				((mouseY > (height * .90) && mouseY < (height * .95)) || (mouseY > (height*.85) && mouseY < (height * .89)))){
+				else if(mouseX > (text_x*.97) && mouseX < (text_x) && mouseY > (height * .90) && mouseY < (height * .95)){
 					filter = 0;
 					received_students = [];
-					student_lock = 0;
-					semester_lock = 0;
-					displayed_students = [];
-					all_gpa_history = [];
-					all_major_history = [];
-					all_class_history = [];
-					all_status_history = [];
-					all_semester_history = [];
-					all_num_class_history = [];
-					mouse_o = [];
-					print_once = 0;
-					while(displayed_students.length < 15){
-						setData();
-						major_history = [];
-						class_history = [];
-						semester_history = [];
-						gpa_history = [];
-						status_history = [];
-						num_class_history = [];
-					}
+					data_refresh();
 				}
 			}
 			
